@@ -1,70 +1,102 @@
-# Getting Started with Create React App
+<div align="center">
+	<h1>💰 Budget Tracker</h1>
+	<p>A lightweight personal expense tracker with a modern Tailwind CSS interface, dark mode styling, and basic analytics.</p>
+	<img src="https://img.shields.io/badge/React-18+-61dafb?logo=react&logoColor=white" />
+	<img src="https://img.shields.io/badge/TailwindCSS-3.x-38bdf8?logo=tailwindcss&logoColor=white" />
+	<img src="https://img.shields.io/badge/Build-CRA%205-blue" />
+</div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+---
 
-## Available Scripts
+## ✨ Features
 
-In the project directory, you can run:
+- 🔐 Local (browser) storage of expenses (no backend required)
+- 🌓 Dark-mode ready utility classes (toggle can be added easily)
+- 💸 Quick add expense form with category list
+- 📜 History view with categorized listing
+- 📊 Analytics (Pie / Bar / Line charts via Recharts)
+- 🎨 Modern UI: glass morphism cards, gradient backgrounds, animated headings
+- ⚡ Fast iteration: Tailwind utility-first workflow
 
-### `npm start`
+## 🗂 Project Structure (frontend)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+frontend/
+	public/
+	src/
+		components/ (LandingPage, Home, History, Analytics)
+		index.js
+		App.js
+		index.css (Tailwind layers + custom utility classes)
+	tailwind.config.js
+	postcss.config.js
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Getting Started
 
-### `npm test`
+Install dependencies (first time):
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```powershell
+cd "D:\Budget tracker\budgety\frontend"
+npm install
+```
 
-### `npm run build`
+Run development server:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```powershell
+npm start
+```
+Open: http://localhost:3000
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Create production build:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```powershell
+npm run build
+```
 
-### `npm run eject`
+## 🎨 Tailwind Setup Summary
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Config: `tailwind.config.js` with extended colors, fonts, animations
+- Directives & layered utilities in `src/index.css`
+- Custom utility classes:
+	- `.btn-primary`, `.btn-secondary`
+	- `.card` (glass effect + hover aura)
+	- `.input` (blur + focus ring)
+	- `.badge`, `.gradient-text`, `.fade-in`, `.glass`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To add dark mode toggle quickly:
+```js
+// In any component or index.js
+const toggle = () => document.documentElement.classList.toggle('dark');
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📊 Charts
+Recharts is used in `Analytics.js` for Pie, Bar, and Line charts. Data is aggregated from `localStorage` each render.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🛠 Tech Stack
+| Layer | Tool |
+|-------|------|
+| UI | React + Tailwind CSS |
+| Build | Create React App (react-scripts 5) |
+| State | Local component state + localStorage |
+| Charts | Recharts |
 
-## Learn More
+## 🔧 Environment Notes
+React 19 APIs are not used; current code is compatible with React 18+ under CRA 5. Tailwind 3.x chosen for stable CRA integration.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🧪 Testing (Optional)
+You can add tests via `npm test` (default CRA testing libs installed), though no custom tests are currently defined.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🗺 Future Enhancements
+- Persistent dark mode preference
+- Category color badges + icons
+- Editable / deletable expenses from history
+- Export / import data (JSON)
+- Basic authentication + backend API
 
-### Code Splitting
+## 📄 License
+Currently unlicensed (private use). Add a LICENSE file if distributing.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Made with focus on clarity and speed of iteration. Feel free to extend! ✌️
