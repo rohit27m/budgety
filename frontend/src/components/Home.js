@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 const Home = ({ username }) => {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
 
-  const categories = ["Beauty", "Travel", "Education", "Food", "Health", "Other"];
+  const categories = [
+    { name: "Beauty", icon: "💄", color: "bg-pink-100 text-pink-700 dark:bg-pink-500/20 dark:text-pink-300" },
+    { name: "Travel", icon: "✈️", color: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300" },
+    { name: "Education", icon: "🎓", color: "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300" },
+    { name: "Food", icon: "🍽️", color: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" },
+    { name: "Health", icon: "🩺", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" },
+    { name: "Other", icon: "🧩", color: "bg-gray-200 text-gray-700 dark:bg-gray-600/40 dark:text-gray-200" }
+  ];
 
   const handleAddExpense = () => {
     if (category && amount) {
@@ -25,27 +31,14 @@ const Home = ({ username }) => {
   };
 
   return (
-  <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
-      {/* Navbar */}
-  <nav className="glass sticky top-0 z-30 border-b border-gray-200/60 dark:border-gray-700/50">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Dashboard</h1>
-          <ul className="flex items-center gap-6 text-sm font-medium">
-            <li><Link className="hover:text-primary-600 transition" to="/history">History</Link></li>
-            <li><Link className="hover:text-primary-600 transition" to="/analytics">Analytics</Link></li>
-            <li><Link className="text-red-600 hover:text-red-700" to="/">Sign Out</Link></li>
-          </ul>
-        </div>
-      </nav>
-
-      {/* Content */}
-  <main className="max-w-5xl mx-auto px-4 py-10 space-y-10 fade-in">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
+      <main className="max-w-5xl mx-auto px-4 py-10 space-y-10 fade-in">
         <header className="mb-10">
           <h2 className="text-3xl font-bold tracking-tight mb-2">Hey, {username}! 👋</h2>
           <p className="text-gray-600 dark:text-gray-400">Add a new expense below to start tracking.</p>
         </header>
 
-          <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           <div className="card">
             <h3 className="text-lg font-semibold mb-4">Add Expense</h3>
             <div className="space-y-4">
@@ -58,7 +51,7 @@ const Home = ({ username }) => {
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat, i) => (
-                    <option key={i} value={cat}>{cat}</option>
+                    <option key={i} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
               </div>
@@ -77,14 +70,29 @@ const Home = ({ username }) => {
           </div>
 
           <div className="card">
-            <h3 className="text-lg font-semibold mb-4">Categories</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Quick Categories</h3>
+              {category && (
+                <span className="text-xs px-2 py-1 rounded bg-primary-500/10 text-primary-600 dark:text-primary-300">Selected: {category}</span>
+              )}
+            </div>
             <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-              {categories.map((c) => (
-                <li key={c} className="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium flex items-center justify-center">
-                  {c}
-                </li>
-              ))}
+              {categories.map((c) => {
+                const active = c.name === category;
+                return (
+                  <li
+                    key={c.name}
+                    onClick={() => setCategory(c.name)}
+                    className={`group cursor-pointer relative px-3 py-3 rounded-xl flex flex-col items-center justify-center gap-1 border text-center transition shadow-sm hover:shadow-md ${c.color} ${active ? 'ring-2 ring-primary-500 scale-[1.02]' : 'border-transparent hover:border-primary-400/40 dark:hover:border-primary-400/30'}`}
+                  >
+                    <span className="text-lg leading-none">{c.icon}</span>
+                    <span className="text-xs font-semibold tracking-wide">{c.name}</span>
+                    {active && <span className="absolute -top-2 -right-2 bg-primary-500 text-white text-[10px] px-1.5 py-0.5 rounded-full shadow animate-pulse">✔</span>}
+                  </li>
+                );
+              })}
             </ul>
+            <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">Tap a category to pre-fill the selector above.</p>
           </div>
         </div>
       </main>
