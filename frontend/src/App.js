@@ -1,78 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./components/Home";
 import History from "./components/History";
 import Analytics from "./components/Analytics";
 import LandingPage from "./components/LandingPage";
-import Login from "./components/Login";
 import Navbar from "./navbar";
 
 // Layout component to inject Navbar with dynamic title based on route
-const Layout = ({ children, onSignOut }) => {
+const Layout = ({ children }) => {
   const location = useLocation();
   const path = location.pathname;
   const titleMap = {
-    "/": "Login",
-    "/landing": "Welcome",
+    "/": "Welcome",
     "/home": "Dashboard",
     "/history": "Expense History",
-    "/analytics": "Analytics",
-    "/login": "Login"
+    "/analytics": "Analytics"
   };
   const title = titleMap[path] || "";
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar title={title} onSignOut={onSignOut} />
+      <Navbar title={title} />
       <div className="flex-1">{children}</div>
     </div>
   );
 };
 
 function App() {
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    const stored = localStorage.getItem("bt_username");
-    if (stored) setUsername(stored);
-  }, []);
-
-  const handleLogin = (name) => setUsername(name);
-  const handleSignOut = () => {
-    localStorage.removeItem("bt_username");
-    setUsername("");
-  };
-
   return (
     <Router>
       <Routes>
         <Route
           path="/"
           element={
-            <Layout onSignOut={handleSignOut}>
-              <Login onLogin={handleLogin} />
-            </Layout>
-          }
-        />
-        <Route
-          path="/landing"
-          element={
-            <Layout onSignOut={handleSignOut}>
-              <LandingPage username={username} />
+            <Layout>
+              <LandingPage />
             </Layout>
           }
         />
         <Route
           path="/home"
           element={
-            <Layout onSignOut={handleSignOut}>
-              <Home username={username || "Guest"} />
+            <Layout>
+              <Home username="Rohit" />
             </Layout>
           }
         />
         <Route
           path="/history"
           element={
-            <Layout onSignOut={handleSignOut}>
+            <Layout>
               <History />
             </Layout>
           }
@@ -80,16 +56,8 @@ function App() {
         <Route
           path="/analytics"
           element={
-            <Layout onSignOut={handleSignOut}>
+            <Layout>
               <Analytics />
-            </Layout>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <Layout onSignOut={handleSignOut}>
-              <Login onLogin={handleLogin} />
             </Layout>
           }
         />

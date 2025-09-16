@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts";
 
 const Analytics = () => {
   const [expenses, setExpenses] = useState([]);
@@ -23,28 +23,6 @@ const Analytics = () => {
 
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"]; 
 
-  // Custom label renderer to place labels outside for clarity
-  const renderCustomizedLabel = ({ cx, cy, midAngle, outerRadius, percent, name }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 18; // place label outside
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    const pct = (percent * 100).toFixed(0);
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="#1f2937"
-        className="dark:fill-gray-100"
-        textAnchor={x > cx ? 'start' : 'end'}
-        dominantBaseline="central"
-        style={{ fontSize: 12, fontWeight: 500 }}
-      >
-        {`${name} ${pct}%`}
-      </text>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
       <div className="max-w-6xl mx-auto px-4 py-10">
@@ -57,27 +35,13 @@ const Analytics = () => {
             <div className="grid lg:grid-cols-2 gap-8">
               <div className="card flex flex-col items-center">
                 <h3 className="text-lg font-semibold mb-4">By Category</h3>
-                <div className="w-full" style={{ height: 360 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart margin={{ top: 10, right: 30, left: 30, bottom: 10 }}>
-                      <Pie
-                        data={data}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={110}
-                        innerRadius={50}
-                        paddingAngle={2}
-                        dataKey="value"
-                        labelLine
-                        label={renderCustomizedLabel}
-                      >
-                        {data.map((_, i) => (<Cell key={i} fill={COLORS[i % COLORS.length]} />))}
-                      </Pie>
-                      <Tooltip formatter={(val, name) => [val, name]} />
-                      <Legend verticalAlign="bottom" height={36} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
+                <PieChart width={360} height={360}>
+                  <Pie data={data} cx="50%" cy="50%" outerRadius={140} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                    {data.map((_, i) => (<Cell key={i} fill={COLORS[i % COLORS.length]} />))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
               </div>
               <div className="card flex flex-col items-center">
                 <h3 className="text-lg font-semibold mb-4">Category Totals</h3>
