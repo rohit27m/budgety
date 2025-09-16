@@ -1,34 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Home = ({ username }) => {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
+  const [expenses, setExpenses] = useState([]);
 
-  const categories = [
-    { name: "Beauty", icon: "💄", color: "bg-pink-100 text-pink-700 dark:bg-pink-500/20 dark:text-pink-300" },
-    { name: "Travel", icon: "✈️", color: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300" },
-    { name: "Education", icon: "🎓", color: "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300" },
-    { name: "Food", icon: "🍽️", color: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" },
-    { name: "Health", icon: "🩺", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" },
-    { name: "Other", icon: "🧩", color: "bg-gray-200 text-gray-700 dark:bg-gray-600/40 dark:text-gray-200" }
-  ];
+  // Simple static categories list (professional, minimal)
+  const categories = ["Beauty", "Travel", "Education", "Food", "Health", "Other"];
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("expenses")) || [];
+    setExpenses(saved);
+  }, []);
 
   const handleAddExpense = () => {
-    if (category && amount) {
+    if (category && amount && parseFloat(amount) > 0) {
       const newExpense = {
         category,
         amount: parseFloat(amount),
         date: new Date().toLocaleDateString("en-GB")
       };
-      const savedExpenses = JSON.parse(localStorage.getItem("expenses")) || [];
-      savedExpenses.push(newExpense);
-      localStorage.setItem("expenses", JSON.stringify(savedExpenses));
+      const updated = [...expenses, newExpense];
+      setExpenses(updated);
+      localStorage.setItem("expenses", JSON.stringify(updated));
       setAmount("");
       setCategory("");
     } else {
-      alert("Please select a category and enter an amount.");
+      alert("Please select a category and enter a valid amount.");
     }
   };
+
+  const total = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+  const lastFive = [...expenses].slice(-5).reverse();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
@@ -51,7 +54,7 @@ const Home = ({ username }) => {
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat, i) => (
-                    <option key={i} value={cat.name}>{cat.name}</option>
+                    <option key={i} value={cat}>{cat}</option>
                   ))}
                 </select>
               </div>
@@ -68,31 +71,38 @@ const Home = ({ username }) => {
               <button onClick={handleAddExpense} className="btn-primary w-full">Add Expense</button>
             </div>
           </div>
-
-          <div className="card">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Quick Categories</h3>
-              {category && (
-                <span className="text-xs px-2 py-1 rounded bg-primary-500/10 text-primary-600 dark:text-primary-300">Selected: {category}</span>
-              )}
+          <div className="card flex flex-col">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold mb-1">Recent Expenses</h3>
+              <div className="flex flex-wrap gap-4 text-sm mt-2">
+                <div className="flex flex-col">
+                  <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Total Spent</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-100">₹{total.toFixed(2)}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Entries</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-100">{expenses.length}</span>
+                </div>
+              </div>
             </div>
-            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-              {categories.map((c) => {
-                const active = c.name === category;
-                return (
-                  <li
-                    key={c.name}
-                    onClick={() => setCategory(c.name)}
-                    className={`group cursor-pointer relative px-3 py-3 rounded-xl flex flex-col items-center justify-center gap-1 border text-center transition shadow-sm hover:shadow-md ${c.color} ${active ? 'ring-2 ring-primary-500 scale-[1.02]' : 'border-transparent hover:border-primary-400/40 dark:hover:border-primary-400/30'}`}
-                  >
-                    <span className="text-lg leading-none">{c.icon}</span>
-                    <span className="text-xs font-semibold tracking-wide">{c.name}</span>
-                    {active && <span className="absolute -top-2 -right-2 bg-primary-500 text-white text-[10px] px-1.5 py-0.5 rounded-full shadow animate-pulse">✔</span>}
+            {expenses.length === 0 ? (
+              <p className="text-sm text-gray-600 dark:text-gray-400">No expenses yet. Add your first entry.</p>
+            ) : (
+              <ul className="divide-y divide-gray-200 dark:divide-gray-700 -mx-4 px-4 mb-4">
+                {lastFive.map((exp, i) => (
+                  <li key={i} className="py-3 flex items-center justify-between text-sm">
+                    <div className="flex flex-col">
+                      <span className="font-medium text-gray-800 dark:text-gray-100">{exp.category}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">{exp.date}</span>
+                    </div>
+                    <span className="font-semibold text-primary-600 dark:text-primary-400">₹{exp.amount}</span>
                   </li>
-                );
-              })}
-            </ul>
-            <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">Tap a category to pre-fill the selector above.</p>
+                ))}
+              </ul>
+            )}
+            {expenses.length > 5 && (
+              <p className="text-[11px] text-gray-500 dark:text-gray-500 mt-auto">Showing last 5 entries. View full history in the History tab.</p>
+            )}
           </div>
         </div>
       </main>
