@@ -36,9 +36,9 @@ const Analytics = () => {
   // Custom label renderer to place labels outside for clarity
   const renderCustomizedLabel = ({ cx, cy, midAngle, outerRadius, percent, name }) => {
     const RADIAN = Math.PI / 180;
-    // Hide very small slices to reduce clutter
-    if (percent * 100 < 5) return null;
-    const radius = outerRadius + 28; // more gap between pie and labels
+    // Offset labels a bit more for tiny slices and slightly smaller font
+    const isTiny = percent < 0.06; // <6%
+    const radius = outerRadius + (isTiny ? 34 : 28);
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     const pct = (percent * 100).toFixed(0);
@@ -50,7 +50,7 @@ const Analytics = () => {
         className="dark:fill-gray-100"
         textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
-        style={{ fontSize: 12, fontWeight: 600 }}
+        style={{ fontSize: isTiny ? 10 : 12, fontWeight: 600 }}
       >
         {`${name} ${pct}%`}
       </text>
@@ -58,7 +58,7 @@ const Analytics = () => {
   };
 
   // Build a legend payload to prefer order Beauty, Education, Food, then any others
-  const preferred = ["Beauty", "Education", "Food"];
+  const preferred = ["Beauty", "Education", "Food", "Health", "Travel"];
   const present = data.map(d => d.name);
   const ordered = preferred.filter(n => present.includes(n));
   const rest = present.filter(n => !ordered.includes(n)).sort();
@@ -83,8 +83,8 @@ const Analytics = () => {
                         data={data}
                         cx="50%"
                         cy="50%"
-                        outerRadius={125}
-                        innerRadius={78}
+                        outerRadius={110}
+                        innerRadius={65}
                         paddingAngle={3}
                         minAngle={3}
                         dataKey="value"
