@@ -1,54 +1,69 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./components/Home";
 import History from "./components/History";
 import Analytics from "./components/Analytics";
-import LandingPage from "./components/LandingPage";
+// import LandingPage from "./components/LandingPage";
+import Login from "./components/Login";
 import Navbar from "./navbar";
 
 // Layout component to inject Navbar with dynamic title based on route
-const Layout = ({ children }) => {
+const Layout = ({ children, onSignOut }) => {
   const location = useLocation();
   const path = location.pathname;
   const titleMap = {
-    "/": "Welcome",
+    "/": "Login",
     "/home": "Dashboard",
     "/history": "Expense History",
-    "/analytics": "Analytics"
+    "/analytics": "Analytics",
+    "/login": "Login"
   };
   const title = titleMap[path] || "";
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar title={title} />
+      <Navbar title={title} onSignOut={onSignOut} />
       <div className="flex-1">{children}</div>
     </div>
   );
 };
 
 function App() {
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("bt_username");
+    if (stored) setUsername(stored);
+  }, []);
+
+  const handleLogin = (name) => setUsername(name);
+  const handleSignOut = () => {
+    localStorage.removeItem("bt_username");
+    setUsername("");
+  };
+
   return (
     <Router>
       <Routes>
         <Route
           path="/"
           element={
-            <Layout>
-              <LandingPage />
+            <Layout onSignOut={handleSignOut}>
+              <Login onLogin={handleLogin} />
             </Layout>
           }
         />
         <Route
           path="/home"
           element={
-            <Layout>
-              <Home username="Rohit" />
+            <Layout onSignOut={handleSignOut}>
+              <Home username={username || "Guest"} />
             </Layout>
           }
         />
         <Route
           path="/history"
           element={
-            <Layout>
+            <Layout onSignOut={handleSignOut}>
               <History />
             </Layout>
           }
@@ -56,8 +71,16 @@ function App() {
         <Route
           path="/analytics"
           element={
-            <Layout>
+            <Layout onSignOut={handleSignOut}>
               <Analytics />
+            </Layout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Layout onSignOut={handleSignOut}>
+              <Login onLogin={handleLogin} />
             </Layout>
           }
         />
