@@ -36,7 +36,9 @@ const Analytics = () => {
   // Custom label renderer to place labels outside for clarity
   const renderCustomizedLabel = ({ cx, cy, midAngle, outerRadius, percent, name }) => {
     const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 18; // place label outside
+    // Hide very small slices to reduce clutter
+    if (percent * 100 < 5) return null;
+    const radius = outerRadius + 28; // more gap between pie and labels
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     const pct = (percent * 100).toFixed(0);
@@ -48,7 +50,7 @@ const Analytics = () => {
         className="dark:fill-gray-100"
         textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
-        style={{ fontSize: 12, fontWeight: 500 }}
+        style={{ fontSize: 12, fontWeight: 600 }}
       >
         {`${name} ${pct}%`}
       </text>
@@ -81,11 +83,12 @@ const Analytics = () => {
                         data={data}
                         cx="50%"
                         cy="50%"
-                        outerRadius={120}
-                        innerRadius={70}
-                        paddingAngle={2}
+                        outerRadius={125}
+                        innerRadius={78}
+                        paddingAngle={3}
+                        minAngle={3}
                         dataKey="value"
-                        labelLine
+                        labelLine={{ stroke: '#cbd5e1', strokeWidth: 1 }}
                         label={renderCustomizedLabel}
                         stroke="#ffffff"
                         strokeWidth={3}
