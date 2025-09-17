@@ -9,7 +9,8 @@ const Navbar = ({ title = "", onSignOut }) => {
   const links = [
     { to: "/home", label: "Home" },
     { to: "/history", label: "History" },
-    { to: "/analytics", label: "Analytics" }
+    { to: "/analytics", label: "Analytics" },
+    { to: "/goals", label: "Goals" }
   ];
 
   const isActive = (path) => location.pathname === path;

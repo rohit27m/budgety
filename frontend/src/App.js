@@ -6,6 +6,7 @@ import Analytics from "./components/Analytics";
 // import LandingPage from "./components/LandingPage";
 import Login from "./components/Login";
 import Navbar from "./navbar";
+import GoalPlanner from "./components/GoalPlanner";
 
 // Layout component to inject Navbar with dynamic title based on route
 const Layout = ({ children, onSignOut }) => {
@@ -16,6 +17,7 @@ const Layout = ({ children, onSignOut }) => {
     "/home": "Dashboard",
     "/history": "Expense History",
     "/analytics": "Analytics",
+    "/goals": "Savings Goal",
     "/login": "Login"
   };
   const title = titleMap[path] || "";
@@ -73,6 +75,14 @@ function App() {
           element={
             <Layout onSignOut={handleSignOut}>
               <Analytics />
+            </Layout>
+          }
+        />
+        <Route
+          path="/goals"
+          element={
+            <Layout onSignOut={handleSignOut}>
+              <GoalPlanner />
             </Layout>
           }
         />
